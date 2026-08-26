@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>September 2nd</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh; min-height: 100dvh;
+      display:flex; justify-content:center; align-items:center;
+      padding:20px;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, #293241 0%, transparent 35%),
+        radial-gradient(circle at 80% 80%, #1f2937 0%, transparent 35%),
+        #0d1117;
+      color:#f5f5f5; overflow:hidden;
+    }
+    .card {
+      width:min(100%,520px); background:rgba(22,27,34,.94);
+      border:1px solid #30363d; border-radius:28px; padding:35px 25px;
+      box-shadow:0 25px 70px rgba(0,0,0,.45); position:relative;
+    }
+    .eyebrow { font-size:12px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#8b949e; margin-bottom:25px; }
+    .eyebrow span { color:#58a6ff; margin-right:6px; }
+    .date { font-size:clamp(65px,18vw,95px); font-weight:900; line-height:.85; letter-spacing:-.07em; color:#f5f5f5; margin-bottom:25px; }
+    .date small { display:block; margin-top:15px; font-size:15px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#8b949e; }
+    .announcement { font-size:clamp(28px,7vw,40px); font-weight:850; letter-spacing:-.04em; margin-bottom:12px; }
+    .sub { color:#8b949e; font-size:16px; line-height:1.6; margin-bottom:28px; }
+    .panel { border:1px dashed #30363d; border-radius:18px; padding:20px; }
+    .question { font-size:18px; font-weight:800; margin-bottom:16px; }
+    .arena { height:130px; position:relative; overflow:hidden; }
+    button {
+      min-height:50px; border-radius:13px; padding:12px 18px;
+      font-family:inherit; font-size:15px; font-weight:800; cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      transition:transform .15s ease,background .15s ease;
+    }
+    #yes {
+      position:absolute; left:0; top:0; z-index:2;
+      background:#238636; color:white; border:1px solid #2ea043;
+      box-shadow:0 5px 15px rgba(35,134,54,.25);
+    }
+    #yes:hover { transform:translateY(-2px); background:#2ea043; }
+    #no {
+      position:absolute; left:160px; top:0; z-index:3;
+      background:#21262d; color:#8b949e; border:1px solid #30363d;
+    }
+    #no:hover { background:#30363d; }
+    .hint { min-height:18px; margin-top:10px; font-size:12px; color:#8b949e; }
+    .success { display:none; text-align:center; padding:30px 5px 10px; }
+    .success.show { display:block; }
+    .success-icon { font-size:65px; margin-bottom:20px; }
+    .success h2 { font-size:clamp(32px,8vw,48px); line-height:1; letter-spacing:-.045em; margin-bottom:15px; }
+    .success p { color:#8b949e; font-size:16px; line-height:1.6; }
+    .stamp { display:inline-block; margin-top:25px; padding:9px 15px; border:1px solid #30363d; border-radius:999px; color:#8b949e; font-size:11px; font-weight:850; letter-spacing:.1em; }
+    @media (max-width:400px) {
+      .card { padding:28px 20px; }
+      .panel { padding:16px; }
+      .arena { height:145px; }
+      button { font-size:14px; padding:11px 14px; }
+    }
+    @media (prefers-reduced-motion:reduce) { button { transition:none; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <section id="questionView">
+      <div class="eyebrow"><span>●</span> Official Announcement</div>
+      <div class="date">02<small>September 2026</small></div>
+      <h1 class="announcement">I'm coming. 😌</h1>
+      <p class="sub">So I just wanted to officially check something very important...</p>
+      <div class="panel">
+        <div class="question">Are you available?</div>
+        <div class="arena" id="arena">
+          <button id="yes" type="button">Yes, I'm available.</button>
+          <button id="no" type="button">No</button>
+        </div>
+        <div class="hint" id="hint">Please select your answer.</div>
+      </div>
+    </section>
+
+    <section id="successView" class="success" aria-live="polite">
+      <div class="success-icon">🫡</div>
+      <h2>Perfect. It's a date.</h2>
+      <p>September 2nd is officially locked in.<br>See you then. ❤️</p>
+      <div class="stamp">STATUS: CONFIRMED</div>
+    </section>
+  </main>
+
+  <script>
+    const arena = document.getElementById("arena");
+    const noButton = document.getElementById("no");
+    const yesButton = document.getElementById("yes");
+    const hint = document.getElementById("hint");
+    const questionView = document.getElementById("questionView");
+    const successView = document.getElementById("successView");
+
+    let noClicks = 0;
+    let lastMove = 0;
+
+    function moveNoButton() {
+      const now = Date.now();
+      if (now - lastMove < 120) return;
+      lastMove = now;
+      noClicks++;
+
+      const padding = 5;
+      const maxX = arena.clientWidth - noButton.offsetWidth - padding;
+      const maxY = arena.clientHeight - noButton.offsetHeight - padding;
+
+      const randomX = padding + Math.random() * Math.max(1, maxX - padding);
+      const randomY = padding + Math.random() * Math.max(1, maxY - padding);
+
+      noButton.style.left = randomX + "px";
+      noButton.style.top = randomY + "px";
+
+      const messages = [
+        "Are you sure about that?",
+        "Hmm... try again.",
+        "That button seems confused.",
+        "I think you meant Yes.",
+        "Okay, we both know that's not happening. 😂",
+        "Fine. I'm taking that as a Yes."
+      ];
+
+      hint.textContent = messages[Math.min(noClicks - 1, messages.length - 1)];
+    }
+
+    noButton.addEventListener("click", event => {
+      event.preventDefault();
+      moveNoButton();
+    });
+
+    noButton.addEventListener("touchstart", event => {
+      event.preventDefault();
+      moveNoButton();
+    }, { passive:false });
+
+    yesButton.addEventListener("click", () => {
+      questionView.style.display = "none";
+      successView.classList.add("show");
+    });
+  </script>
+</body>
+</html>
